@@ -14,33 +14,42 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		// 主页
 		LinkPreset.Home,
 
-		// 归档
-		LinkPreset.Archive,
+		// 文章
+		{
+			name: "文章",
+			url: "/archive/",
+			icon: "material-symbols:archive",
+		},
+
+		// 技能
+		{
+			name: "技能",
+			url: "/skills/",
+			icon: "material-symbols:code",
+		},
+
+		// 收藏
+		{
+			name: "收藏",
+			url: "/bookmarks/",
+			icon: "material-symbols:bookmarks",
+		},
 	];
 
-	// 根据配置决定是否添加友链，在siteConfig关闭pages.friends时导航栏不显示友链
+	// 根据配置决定是否添加友链
 	if (siteConfig.pages.friends) {
 		links.push(LinkPreset.Friends);
 	}
 
-	// 根据配置决定是否添加留言板，在siteConfig关闭pages.guestbook时导航栏不显示留言板
+	// 根据配置决定是否添加留言板
 	if (siteConfig.pages.guestbook) {
 		links.push(LinkPreset.Guestbook);
 	}
 
-	// 我的及其子菜单
-	links.push({
-		name: "我的",
-		url: "/my/",
-		icon: "material-symbols:person",
-		children: [
-			// 根据配置决定是否添加相册，在siteConfig关闭pages.gallery时导航栏不显示相册
-			...(siteConfig.pages.gallery ? [LinkPreset.Gallery] : []),
-
-			// 根据配置决定是否添加番组计划，在siteConfig关闭pages.bangumi时导航栏不显示番组计划
-			...(siteConfig.pages.bangumi ? [LinkPreset.Bangumi] : []),
-		],
-	});
+	// 根据配置决定是否添加相册
+	if (siteConfig.pages.gallery) {
+		links.push(LinkPreset.Gallery);
+	}
 
 	// 关于及其子菜单
 	links.push({
@@ -48,10 +57,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "/content/",
 		icon: "material-symbols:info",
 		children: [
-			// 根据配置决定是否添加赞助，在siteConfig关闭pages.sponsor时导航栏不显示赞助
 			...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
-
-			// 关于页面
 			LinkPreset.About,
 		],
 	});
