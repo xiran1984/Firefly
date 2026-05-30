@@ -84,6 +84,8 @@ export type SiteConfig = {
 		friends: boolean; // 友链页面开关
 		sponsor: boolean; // 赞助页面开关
 		guestbook: boolean; // 留言板页面开关
+		bookmarks: boolean; // 收藏页面开关
+		skills: boolean; // 技能页面开关
 		bangumi: boolean;
 		gallery: boolean; // 相册页面开关
 	};
@@ -810,6 +812,17 @@ export type GalleryAlbum = {
 };
 
 // 相册配置
+// 技能类型
+export type Skill = {
+	slug: string; // URL slug
+	name: string; // 技能名称
+	description: string; // 技能简介
+	content: string; // 技能详细内容（Markdown）
+	tags?: string[]; // 标签
+	weight: number; // 权重，数字越大排序越靠前
+	enabled: boolean; // 是否启用
+};
+
 export type GalleryConfig = {
 	albums: GalleryAlbum[];
 	columnWidth?: number; // 瀑布流最小列宽(px)，默认 240，浏览器根据容器宽度自动计算列数

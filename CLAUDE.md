@@ -55,6 +55,7 @@ All config lives under `src/config/` and re-exports from `src/config/index.ts`. 
 | `profileConfig.ts` | Author info for profile widgets |
 | `fontConfig.ts` | Custom font definitions |
 | `expressiveCodeConfig.ts` | Code block theme and plugin settings |
+| `skillsConfig.ts` | Skill packs displayed on the skills page and served via `skills.txt` |
 
 **Pattern:** Most feature toggles live in config, not in component props. Config changes take effect on next dev server restart (HMR picks up most but not all).
 
@@ -76,10 +77,13 @@ Language keys are an enum in `src/i18n/i18nKey.ts`. Translations live in `src/i1
 - `src/pages/[...page].astro` — paginated post listing (index page)
 - `src/pages/archive.astro` — archive page with full post list
 - `src/pages/search.astro` — Pagefind-powered search
+- `src/pages/skills/index.astro`, `src/pages/skills/[slug].astro` — skill pack listing and detail pages
+- `src/pages/skills.txt.ts` — all skill protocols as a single text/markdown file for AI consumption
 - `src/pages/bangumi.astro`, `friends.astro`, `guestbook.astro`, `sponsor.astro`, `gallery/` — feature pages
 - `src/pages/api/allPostMeta.json.ts` — API endpoint exposing post metadata
 - `src/pages/og/[...slug].png.ts` — OG image generation (disabled by default, slow)
 - `src/pages/rss.xml.ts` — RSS feed generation
+- `src/pages/llms.txt.ts` — llms.txt generation (site info, skill list, posts)
 
 ### Component patterns
 

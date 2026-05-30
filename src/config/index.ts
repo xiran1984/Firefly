@@ -30,6 +30,7 @@ export { announcementConfig } from "./announcementConfig"; // 公告配置
 // 样式配置
 export { backgroundWallpaper } from "./backgroundWallpaper"; // 背景壁纸配置
 // 功能配置
+export { bookmarksConfig, getEnabledBookmarks } from "./bookmarksConfig"; // 收藏配置
 export { commentConfig } from "./commentConfig"; // 评论系统配置
 export { coverImageConfig } from "./coverImageConfig"; // 封面图配置
 export { sakuraConfig } from "./effectsConfig"; // 动画特效配置（樱花等）
@@ -49,4 +50,5 @@ export { profileConfig } from "./profileConfig"; // 用户资料配置
 export { sidebarLayoutConfig } from "./sidebarConfig"; // 侧边栏布局配置
 // 核心配置
 export { siteConfig } from "./siteConfig"; // 站点基础配置
+export { skillsConfig, getEnabledSkills } from "./skillsConfig"; // 技能配置
 export { sponsorConfig } from "./sponsorConfig"; // 赞助配置
