@@ -1,0 +1,67 @@
+---
+import { getEnabledSkills } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import type { Skill } from "@/types/config";
+import Markdown from "@components/common/Markdown.astro";
+import { marked } from "marked";
+
+export function getStaticPaths() {
+  const skills = getEnabledSkills();
+  return skills.map((skill) => ({
+    params: { slug: skill.slug },
+    props: { skill },
+  }));
+}
+
+const { skill } = Astro.props as { skill: Skill };
+const title = `${skill.name} - ${i18n(I18nKey.skills)}`;
+const htmlContent = marked.parse(skill.content) as string;
+---
+
+<MainGridLayout title={title} description={skill.description}>
+  <div
+    class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32"
+  >
+    <article class="card-base z-10 px-9 py-6 relative w-full">
+      <!-- 返回链接 -->
+      <a
+        href="/skills/"
+        class="inline-flex items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400 hover:text-(--primary) transition-colors mb-4"
+      >
+        <span class="text-lg leading-none">&larr;</span>
+        {i18n(I18nKey.skills)}
+      </a>
+
+      <!-- 技能头部 -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          {skill.name}
+        </h1>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          {skill.description}
+        </p>
+        {
+          skill.tags && skill.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              {skill.tags.map((tag) => (
+                <span class="text-[0.7rem] px-2 py-0.5 rounded bg-(--primary)/10 text-(--primary) font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- 分隔线 -->
+      <div class="border-t border-(--line-divider) mb-6"></div>
+
+      <!-- 文章内容 -->
+      <Markdown class="mb-6 markdown-content onload-animation">
+        <Fragment set:html={htmlContent} />
+      </Markdown>
+    </article>
+  </div>
+</MainGridLayout>
