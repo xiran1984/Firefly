@@ -13,7 +13,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "Xiran's Site",
 
 	// 站点 URL
-	site_url: "http://localhost:4321",
+	site_url: "https://xiran.vercel.app",
 
 	// 站点描述
 	description: "",
