@@ -88,6 +88,24 @@
     }
   }
 
+  /* 代码块配色与 expressive-code 主题保持一致 */
+  /* 亮色: one-light, 暗色: one-dark-pro */
+  pre {
+    @apply my-4 p-4 rounded-xl overflow-x-auto;
+    background: #fafafa;
+    color: #383a42;
+
+    code {
+      @apply bg-transparent p-0 rounded-none;
+      color: inherit;
+    }
+  }
+
+  html.dark .custom-md pre {
+    background: #282c34;
+    color: #abb2bf;
+  }
+
   .expressive-code {
     @apply my-4;
   }

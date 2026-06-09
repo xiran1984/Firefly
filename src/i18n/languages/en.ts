@@ -55,7 +55,13 @@ export const en: Translation = {
 	[Key.friendsDescription]:
 		"Here are my friends, welcome to visit and communicate with each other",
 	[Key.searchFriends]: "Search friends...",
-	[Key.friendsEmpty]: "No friends yet.",
+	[Key.friendsEmpty]: "No friend links yet",
+	[Key.bookmarks]: "Bookmarks",
+	[Key.bookmarksDescription]:
+		"Websites, tools and articles I've bookmarked",
+	[Key.skills]: "Skills",
+	[Key.skillsDescription]:
+		"Claude Code skill packs to boost AI collaboration efficiency",
 	[Key.guestbook]: "Guestbook",
 	[Key.guestbookDescription]:
 		"Welcome to leave your mark here, share your thoughts and suggestions",

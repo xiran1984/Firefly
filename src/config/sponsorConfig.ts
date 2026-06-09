@@ -18,7 +18,7 @@ export const sponsorConfig: SponsorConfig = {
 	showComment: true,
 
 	// 是否在文章详情页底部显示赞助按钮
-	showButtonInPost: true,
+	showButtonInPost: false,
 
 	// 赞助方式列表
 	methods: [
@@ -57,22 +57,5 @@ export const sponsorConfig: SponsorConfig = {
 	],
 
 	// 赞助者列表（可选）
-	sponsors: [
-		// 示例：已实名赞助者
-		{
-			name: "夏叶",
-			avatar:
-				"https://weavatar.com/avatar/d252655d40d6874417a720bad0a6c5f77f8f6a1fd2f882f8f338402dc37e4190?s=640",
-			amount: "¥50",
-			date: "2025-10-01",
-		},
-
-		// 示例：匿名赞助者
-		{
-			name: "匿名用户",
-			// avatar: "",
-			amount: "¥20",
-			date: "2025-10-01",
-		},
-	],
+	sponsors: [],
 };

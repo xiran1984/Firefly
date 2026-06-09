@@ -55,7 +55,13 @@ export const ja: Translation = {
 	[Key.friendsDescription]:
 		"ここは私の友達です、お互いに訪問して交流することを歓迎します",
 	[Key.searchFriends]: "友達を検索...",
-	[Key.friendsEmpty]: "まだ友達がいません",
+	[Key.friendsEmpty]: "まだ友達リンクがありません",
+	[Key.bookmarks]: "ブックマーク",
+	[Key.bookmarksDescription]:
+		"ブックマークしたウェブサイト、ツール、記事",
+	[Key.skills]: "スキル",
+	[Key.skillsDescription]:
+		"Claude Code スキルパック、AI コラボレーション効率を向上",
 	[Key.guestbook]: "ゲストブック",
 	[Key.guestbookDescription]:
 		"ここに足跡を残して、あなたの考えや提案を共有してください",

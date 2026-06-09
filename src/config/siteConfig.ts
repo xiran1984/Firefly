@@ -7,13 +7,13 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "Firefly",
+	title: "Xiran's Site",
 
 	// 站点副标题
 	subtitle: "Xiran's Site",
 
 	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: "http://localhost:4321",
 
 	// 站点描述
 	description: "",
@@ -70,7 +70,7 @@ export const siteConfig: SiteConfig = {
 			alt: "🍀",
 		},
 		// 导航栏标题
-		title: "Firefly",
+		title: "Xiran's Site",
 		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中
@@ -102,7 +102,7 @@ export const siteConfig: SiteConfig = {
 	outdatedThreshold: 30,
 
 	// 是否开启分享海报生成功能
-	sharePoster: true,
+	sharePoster: false,
 
 	// OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
 	generateOgImages: false,
@@ -126,6 +126,10 @@ export const siteConfig: SiteConfig = {
 		sponsor: true,
 		// 留言板页面开关，需要配置评论系统
 		guestbook: true,
+		// 收藏页面开关
+		bookmarks: true,
+		// 技能页面开关
+		skills: true,
 		// 番组计划页面开关，含追番、游戏、书籍和音乐，dev调试时只获取一页数据，build才会获取全部数据
 		bangumi: true,
 		// 相册页面开关
@@ -174,8 +178,6 @@ export const siteConfig: SiteConfig = {
 			websiteId: "",
 			// Umami JS地址，支持使用自建
 			scriptUrl: "https://cloud.umami.is/script.js",
-			// Umami 会话回放脚本地址，支持使用自建
-			replaysScriptUrl: "https://cloud.umami.is/recorder.js",
 			// 是否追踪出站链接
 			trackOutboundLinks: true,
 			// 是否收集浏览器性能指标

@@ -55,7 +55,13 @@ export const ru: Translation = {
 	[Key.friendsDescription]:
 		"Вот мои друзья, добро пожаловать посетить и общаться друг с другом",
 	[Key.searchFriends]: "Поиск друзей...",
-	[Key.friendsEmpty]: "Друзей пока нет.",
+	[Key.friendsEmpty]: "Пока нет друзей",
+	[Key.bookmarks]: "Закладки",
+	[Key.bookmarksDescription]:
+		"Сайты, инструменты и статьи, которые я добавил в закладки",
+	[Key.skills]: "Навыки",
+	[Key.skillsDescription]:
+		"Пакеты навыков Claude Code для повышения эффективности совместной работы с ИИ",
 	[Key.guestbook]: "Гостевая книга",
 	[Key.guestbookDescription]:
 		"Добро пожаловать, оставьте свой след здесь, поделитесь своими мыслями и предложениями",
