@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
 		// 未列出的类型将按默认顺序排在后面
 		categoryOrder: ["anime", "book", "music", "game"],
 		// 数据获取模式："dynamic" 为构建时实时拉取，"static" 使用本地缓存
-		fetchMode: "static",
+		mode: "static",
 	},
 
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404
@@ -225,11 +225,6 @@ export const siteConfig: SiteConfig = {
 		// 支持通配符 *，例如：["i0.hdslb.com", "*.bilibili.com"]
 		// 可解决指定域名图片加载时的 403 问题（如防盗链图片）
 		noReferrerDomains: [],
-		// LQIP 渐变占位图配置
-		lqip: {
-			// 是否启用 LQIP（低质量图像占位符）渐变效果
-			enabled: false,
-		},
 	},
 
 	// 字体配置
