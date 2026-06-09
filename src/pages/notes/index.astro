@@ -1,0 +1,68 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const allNotes = await getCollection("notes", ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+const sorted = allNotes.sort((a, b) => {
+  const dateA = new Date(a.data.published).getTime();
+  const dateB = new Date(b.data.published).getTime();
+  return dateB - dateA;
+});
+---
+
+<MainGridLayout title="笔记" description="原子笔记，按时间分类。">
+  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full">
+      <div class="mb-4">
+        <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
+          笔记
+        </div>
+        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          共 {sorted.length} 篇原子笔记
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {sorted.map((note) => {
+          const dateStr = new Date(note.data.published).toISOString().slice(0, 10);
+          return (
+            <a
+              href={`/notes/${note.id}/`}
+              class="card-base group p-5 rounded-xl border border-(--line-divider) hover:border-(--primary) transition-all duration-300 hover:shadow-lg flex flex-col gap-2"
+            >
+              <div class="flex items-start gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors line-clamp-2">
+                    {note.data.title}
+                  </div>
+                  {note.data.description && (
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1.5">
+                      {note.data.description}
+                    </p>
+                  )}
+                </div>
+                <div class="shrink-0 flex items-center gap-1 text-xs text-black/40 dark:text-white/40 mt-0.5">
+                  <Icon name="material-symbols:calendar-month-outline-rounded" class="text-[1em]" />
+                  <span>{dateStr}</span>
+                </div>
+              </div>
+              {note.data.tags && note.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {note.data.tags.slice(0, 3).map((tag: string) => (
+                    <span class="text-[0.65rem] px-2 py-0.5 rounded bg-(--primary)/10 text-(--primary) font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</MainGridLayout>
