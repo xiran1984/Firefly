@@ -13,30 +13,38 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	const links: (NavBarLink | LinkPreset)[] = [
 		// 主页
 		LinkPreset.Home,
-
-		// 文章
-		{
-			name: "文章",
-			url: "/archive/",
-			icon: "material-symbols:archive",
-		},
-
-		// 技能
-		{
-			name: "技能",
-			url: "/skills/",
-			icon: "material-symbols:code",
-		},
-
-		// 收藏
-		{
-			name: "收藏",
-			url: "/bookmarks/",
-			icon: "material-symbols:bookmarks",
-		},
 	];
 
-	// 根据配置决定是否添加友链
+	// 文章及其子菜单
+	links.push({
+		name: "文章",
+		url: "/post/",
+		icon: "material-symbols:article-rounded",
+		children: [
+			// 归档
+			LinkPreset.Archive,
+			// 分类
+			LinkPreset.Categories,
+			// 标签
+			LinkPreset.Tags,
+		],
+	});
+
+	// 技能
+	links.push({
+		name: "技能",
+		url: "/skills/",
+		icon: "material-symbols:code",
+	});
+
+	// 收藏
+	links.push({
+		name: "收藏",
+		url: "/bookmarks/",
+		icon: "material-symbols:bookmarks",
+	});
+
+	// 根据配置决定是否添加友链，在siteConfig关闭pages.friends时导航栏不显示友链
 	if (siteConfig.pages.friends) {
 		links.push(LinkPreset.Friends);
 	}
@@ -62,15 +70,6 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
-	// 自定义导航栏链接（清空预设，可按需添加）
-	// links.push({
-	// 	name: "链接",
-	// 	url: "/links/",
-	// 	icon: "material-symbols:link",
-	// 	children: [],
-	// });
-
-	// 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出
 	return { links } as NavBarConfig;
 };
 

@@ -13,6 +13,8 @@ enum I18nKey {
 
 	tags = "tags",
 	categories = "categories",
+	allCategories = "allCategories",
+	allTags = "allTags",
 	recentPosts = "recentPosts",
 	postList = "postList",
 	tableOfContents = "tableOfContents",
@@ -132,6 +134,10 @@ enum I18nKey {
 	bangumiCurrentPage = "bangumiCurrentPage",
 	bangumiTotalPages = "bangumiTotalPages",
 	bangumiPage = "bangumiPage",
+
+	// 番组错误
+	bangumiFetchError = "bangumiFetchError",
+	bangumiFetchErrorDesc = "bangumiFetchErrorDesc",
 
 	// 番组分类
 	bangumiCategoryBook = "bangumiCategoryBook",
@@ -285,6 +291,8 @@ enum I18nKey {
 	calendarOctober = "calendarOctober",
 	calendarNovember = "calendarNovember",
 	calendarDecember = "calendarDecember",
+	calendar = "calendar",
+	calendarHeatmapWeek = "calendarHeatmapWeek",
 
 	shareArticle = "shareArticle",
 	generatingPoster = "generatingPoster",

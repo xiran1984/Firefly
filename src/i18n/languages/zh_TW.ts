@@ -17,6 +17,8 @@ export const zh_TW: Translation = {
 
 	[Key.tags]: "標籤",
 	[Key.categories]: "分類",
+	[Key.allCategories]: "所有分類",
+	[Key.allTags]: "所有標籤",
 	[Key.recentPosts]: "最新文章",
 	[Key.postList]: "文章列表",
 	[Key.tableOfContents]: "文章目錄",
@@ -127,6 +129,9 @@ export const zh_TW: Translation = {
 	[Key.bangumiNoDataDescription]: "該分類下還沒有任何條目",
 	[Key.bangumiEmpty]: "暫無數據",
 	[Key.bangumiEmptyReason]: "可能的原因：用戶名不存在、網絡連接問題或API限制",
+	[Key.bangumiFetchError]: "Bangumi 資料拉取失敗",
+	[Key.bangumiFetchErrorDesc]:
+		"構建時從 Bangumi API 獲取資料失敗，該頁面內容暫不可用。",
 	[Key.bangumiUsername]: "用戶名",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]: "提示：請在頁面配置中設置正確的Bangumi用戶名",
@@ -291,6 +296,8 @@ export const zh_TW: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+	[Key.calendar]: "站點日曆",
+	[Key.calendarHeatmapWeek]: "{month}月第{week}週，{count}篇文章",
 
 	[Key.shareArticle]: "分享",
 	[Key.generatingPoster]: "海報生成中...",

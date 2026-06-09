@@ -17,6 +17,8 @@ export const zh_CN: Translation = {
 
 	[Key.tags]: "标签",
 	[Key.categories]: "分类",
+	[Key.allCategories]: "所有分类",
+	[Key.allTags]: "所有标签",
 	[Key.recentPosts]: "最新文章",
 	[Key.postList]: "文章列表",
 	[Key.tableOfContents]: "文章目录",
@@ -125,6 +127,9 @@ export const zh_CN: Translation = {
 	[Key.bangumiNoDataDescription]: "该分类下还没有任何条目",
 	[Key.bangumiEmpty]: "暂无数据",
 	[Key.bangumiEmptyReason]: "可能的原因：用户名不存在、网络连接问题或API限制",
+	[Key.bangumiFetchError]: "Bangumi 数据拉取失败",
+	[Key.bangumiFetchErrorDesc]:
+		"构建时从 Bangumi API 获取数据失败，该页面内容暂不可用。",
 	[Key.bangumiUsername]: "用户名",
 	[Key.bangumiApi]: "API",
 	[Key.bangumiConfigTip]: "提示：请在页面配置中设置正确的Bangumi用户名",
@@ -289,6 +294,8 @@ export const zh_CN: Translation = {
 	[Key.calendarOctober]: "10月",
 	[Key.calendarNovember]: "11月",
 	[Key.calendarDecember]: "12月",
+	[Key.calendar]: "站点日历",
+	[Key.calendarHeatmapWeek]: "{month}月第{week}周，{count}篇文章",
 
 	[Key.shareArticle]: "分享",
 	[Key.generatingPoster]: "海报生成中...",
