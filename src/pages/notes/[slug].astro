@@ -2,12 +2,22 @@
 import { getCollection, render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Markdown from "@/components/common/Markdown.astro";
+import noteMap from "@/data/note-link-map.json";
+import { buildNoteGraph } from "@/lib/note-links.mjs";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 export async function getStaticPaths() {
 	const allNotes = await getCollection("notes", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
+	const graph = buildNoteGraph(
+		allNotes.map((note) => ({
+			id: note.id,
+			title: note.data.title,
+			body: note.body || "",
+		})),
+		noteMap,
+	);
 	const sorted = allNotes.sort((a, b) => {
 		const dateA = new Date(a.data.published).getTime();
 		const dateB = new Date(b.data.published).getTime();
@@ -15,11 +25,15 @@ export async function getStaticPaths() {
 	});
 	return sorted.map((note) => ({
 		params: { slug: note.id },
-		props: { note },
+		props: {
+			note,
+			relatedNotes: graph.relatedById[note.id] || [],
+			unpublishedRelations: graph.unpublishedById[note.id] || [],
+		},
 	}));
 }
 
-const { note } = Astro.props;
+const { note, relatedNotes, unpublishedRelations } = Astro.props;
 const { Content } = await render(note);
 
 const title = note.data.title;
@@ -72,6 +86,32 @@ const description = note.data.description;
       <Markdown class="mb-6 markdown-content onload-animation">
         <Content />
       </Markdown>
+
+      {(relatedNotes.length > 0 || unpublishedRelations.length > 0) && (
+        <section class="note-relations border-(--line-divider) border-dashed border-t pt-5 mt-5">
+          <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+            <Icon name="material-symbols:link-rounded" class="text-(--primary)" />
+            关联
+          </h2>
+          <ul class="grid gap-2">
+            {relatedNotes.map((relatedNote: { id: string; title: string }) => (
+              <li>
+                <a
+                  href={`/notes/${relatedNote.id}/`}
+                  class="block px-3 py-2 rounded bg-black/3 hover:bg-(--primary)/10 dark:bg-white/5 dark:hover:bg-(--primary)/15 transition-colors"
+                >
+                  {relatedNote.title}
+                </a>
+              </li>
+            ))}
+            {unpublishedRelations.map((title: string) => (
+              <li class="px-3 py-2 text-black/45 dark:text-white/45">
+                {title}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   </div>
 </MainGridLayout>
