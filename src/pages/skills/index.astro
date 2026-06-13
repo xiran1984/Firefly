@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { getEnabledSkills, siteConfig } from "@/config";
+import { getEnabledSkills } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -69,11 +69,24 @@ const description = i18n(I18nKey.skillsDescription);
               class="skill-card card-base group p-5 rounded-xl border border-(--line-divider) hover:border-(--primary) transition-all duration-300 hover:shadow-lg flex flex-col gap-3"
             >
               <div class="flex items-center gap-3">
-                <div
-                  class="h-10 w-10 shrink-0 rounded-lg bg-(--primary)/10 flex items-center justify-center text-(--primary)"
-                >
-                  <Icon name="material-symbols:neurology" class="text-[1.4rem]" />
-                </div>
+                {
+                  item.image ? (
+                    <img
+                      src={item.image}
+                      alt=""
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                      class="h-14 w-14 shrink-0 rounded-lg object-cover border border-(--line-divider)"
+                    />
+                  ) : (
+                    <div
+                      class="h-14 w-14 shrink-0 rounded-lg bg-(--primary)/10 flex items-center justify-center text-(--primary)"
+                    >
+                      <Icon name="material-symbols:neurology" class="text-[1.5rem]" />
+                    </div>
+                  )
+                }
                 <div class="min-w-0">
                   <div class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors truncate">
                     {item.name}

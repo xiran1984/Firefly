@@ -143,7 +143,7 @@ export const siteConfig: SiteConfig = {
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "list",
 		// 是否在文章列表中显示标签
-		showTags: true,
+		showTags: false,
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 是否允许用户切换布局

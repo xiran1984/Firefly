@@ -829,6 +829,7 @@ export type Skill = {
 	name: string; // 技能名称
 	description: string; // 技能简介
 	content: string; // 技能详细内容（Markdown）
+	image?: string; // 技能卡片图片
 	tags?: string[]; // 标签
 	weight: number; // 权重，数字越大排序越靠前
 	enabled: boolean; // 是否启用

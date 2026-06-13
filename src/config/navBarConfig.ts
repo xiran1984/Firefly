@@ -23,10 +23,6 @@ import { siteConfig } from "./siteConfig";
 			children: [
 				// 归档
 				LinkPreset.Archive,
-				// 分类
-				LinkPreset.Categories,
-				// 标签
-				LinkPreset.Tags,
 			],
 		});
 
