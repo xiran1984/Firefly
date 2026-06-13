@@ -18,12 +18,8 @@ import { siteConfig } from "./siteConfig";
 		// 文章及其子菜单
 		links.push({
 			name: "文章",
-			url: "/post/",
+			url: "/archive/",
 			icon: "material-symbols:article-rounded",
-			children: [
-				// 归档
-				LinkPreset.Archive,
-			],
 		});
 
 		// 笔记

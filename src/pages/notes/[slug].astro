@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import { Icon } from "astro-icon/components";
+import Markdown from "@/components/common/Markdown.astro";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 
 export async function getStaticPaths() {
@@ -68,9 +69,9 @@ const description = note.data.description;
 
       <div class="border-(--line-divider) border-dashed border-b mt-3 mb-5"></div>
 
-      <div class="markdown-content mb-6">
+      <Markdown class="mb-6 markdown-content onload-animation">
         <Content />
-      </div>
+      </Markdown>
     </div>
   </div>
 </MainGridLayout>
