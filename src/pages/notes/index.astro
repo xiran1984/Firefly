@@ -2,67 +2,479 @@
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import mocData from "@/data/note-mocs.json";
 
 const allNotes = await getCollection("notes", ({ data }) => {
-  return import.meta.env.PROD ? data.draft !== true : true;
+	return import.meta.env.PROD ? data.draft !== true : true;
 });
+
+const noteMocs = new Map<string, string[]>();
+for (const moc of mocData.mocs) {
+	for (const noteId of moc.noteIds) {
+		const memberships = noteMocs.get(noteId) ?? [];
+		memberships.push(moc.name);
+		noteMocs.set(noteId, memberships);
+	}
+}
 
 const sorted = allNotes.sort((a, b) => {
-  const dateA = new Date(a.data.published).getTime();
-  const dateB = new Date(b.data.published).getTime();
-  return dateB - dateA;
+	return b.data.published.getTime() - a.data.published.getTime();
 });
+
+const groups: { year: number; notes: typeof sorted }[] = [];
+for (const note of sorted) {
+	const year = note.data.published.getFullYear();
+	let group = groups.find((item) => item.year === year);
+	if (!group) {
+		group = { year, notes: [] };
+		groups.push(group);
+	}
+	group.notes.push(note);
+}
+groups.sort((a, b) => b.year - a.year);
+
+function formatDate(date: Date) {
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	return `${month}-${day}`;
+}
+
 ---
 
-<MainGridLayout title="笔记" description="原子笔记，按时间分类。">
-  <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
-    <div class="card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full">
-      <div class="mb-4">
-        <div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
-          笔记
-        </div>
-        <p class="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
-          共 {sorted.length} 篇原子笔记
-        </p>
-      </div>
+<MainGridLayout title="笔记" description="按时间和 MOC 目录浏览原子笔记。">
+	<div
+		id="notes-browser"
+		class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32"
+	>
+		<div class="card-base z-10 px-5 md:px-9 pt-6 pb-5 relative w-full">
+			<header class="mb-5">
+				<div class="flex items-center gap-3 mb-2">
+					<div
+						class="h-8 w-8 rounded-lg bg-(--primary) flex items-center justify-center text-white dark:text-black/70"
+					>
+						<Icon name="material-symbols:neurology" class="text-[1.5rem]" />
+					</div>
+					<div class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+						笔记
+					</div>
+				</div>
+				<p class="text-sm md:text-base text-neutral-600 dark:text-neutral-400">
+					<span id="notes-result-count">{sorted.length}</span> 篇原子笔记
+				</p>
+			</header>
 
-      <div class="space-y-4">
-        {sorted.map((note) => {
-          const dateStr = new Date(note.data.published).toISOString().slice(0, 10);
-          return (
-            <a
-              href={`/notes/${note.id}/`}
-              class="card-base group p-5 rounded-xl border border-(--line-divider) hover:border-(--primary) transition-all duration-300 hover:shadow-lg flex flex-col gap-2"
-            >
-              <div class="flex items-start gap-3">
-                <div class="min-w-0 flex-1">
-                  <div class="font-bold text-base text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors line-clamp-2">
-                    {note.data.title}
-                  </div>
-                  {note.data.description && (
-                    <p class="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1.5">
-                      {note.data.description}
-                    </p>
-                  )}
-                </div>
-                <div class="shrink-0 flex items-center gap-1 text-xs text-black/40 dark:text-white/40 mt-0.5">
-                  <Icon name="material-symbols:calendar-month-outline-rounded" class="text-[1em]" />
-                  <span>{dateStr}</span>
-                </div>
-              </div>
-              {note.data.tags && note.data.tags.length > 0 && (
-                <div class="flex flex-wrap gap-1.5">
-                  {note.data.tags.slice(0, 3).map((tag: string) => (
-                    <span class="text-[0.65rem] px-2 py-0.5 rounded bg-(--primary)/10 text-(--primary) font-medium">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </a>
-          );
-        })}
-      </div>
-    </div>
-  </div>
+			<section class="notes-filter-panel" aria-label="笔记筛选">
+				<div class="filter-heading">
+					<div class="filter-label">
+						<Icon name="material-symbols:account-tree-outline-rounded" />
+						<span>MOC 目录</span>
+					</div>
+					<button id="clear-note-filters" class="clear-filter-button" type="button">
+						<Icon name="material-symbols:filter-alt-off-outline-rounded" />
+						<span>清除筛选</span>
+					</button>
+				</div>
+
+				<div class="moc-filter-grid" role="group" aria-label="选择 MOC 目录">
+					<button
+						type="button"
+						class="moc-filter-button"
+						data-moc=""
+						aria-pressed="true"
+					>
+						<span class="moc-name">全部目录</span>
+						<span class="moc-count">{sorted.length}</span>
+					</button>
+					{
+						mocData.mocs.map((moc) => (
+							<button
+								type="button"
+								class="moc-filter-button"
+								data-moc={moc.name}
+								data-description={moc.description}
+								aria-pressed="false"
+							>
+								<span class="moc-name">{moc.name}</span>
+								<span class="moc-count">{moc.noteIds.length}</span>
+							</button>
+						))
+					}
+				</div>
+
+				<div id="selected-moc-summary" class="selected-moc-summary" hidden>
+					<strong id="selected-moc-name"></strong>
+					<span id="selected-moc-description"></span>
+				</div>
+
+			</section>
+
+			<div class="border-(--line-divider) border-dashed border-b my-5"></div>
+
+			<div id="notes-empty-state" class="notes-empty-state" hidden>
+				<Icon name="material-symbols:search-off-rounded" />
+				<p>这个目录内没有笔记</p>
+			</div>
+
+			<div id="notes-timeline">
+				{
+					groups.map((group) => (
+						<section class="timeline-year-group" data-year={group.year}>
+							<div class="timeline-year-heading">
+								<div class="timeline-year">{group.year}</div>
+								<div class="timeline-marker">
+									<div />
+								</div>
+								<div class="timeline-year-count">
+									<span data-visible-count>{group.notes.length}</span> 篇
+								</div>
+							</div>
+
+							<div class="timeline-posts">
+								{group.notes.map((note) => {
+									const memberships = noteMocs.get(note.id) ?? [];
+									return (
+										<a
+											href={`/notes/${note.id}/`}
+											class="note-timeline-item group btn-plain block! h-10 w-full rounded-lg hover:text-[initial]"
+											data-mocs={memberships.join("|")}
+										>
+											<div class="flex flex-row justify-start items-center h-full">
+												<div class="w-[15%] md:w-[10%] transition text-sm text-right text-50">
+													{formatDate(note.data.published)}
+												</div>
+												<div class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center">
+													<div
+														class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
+														bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-(--primary)
+														outline outline-4 z-50 outline-(--card-bg)
+														group-hover:outline-(--btn-plain-bg-hover)"
+													/>
+												</div>
+												<div
+													class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+													group-hover:translate-x-1 transition-all group-hover:text-(--primary)
+													text-75 pr-3 md:pr-8 whitespace-nowrap text-ellipsis overflow-hidden flex items-center gap-2"
+												>
+													{memberships[0] && (
+														<span class="note-moc-label">{memberships[0]}</span>
+													)}
+													<span class="truncate">{note.data.title}</span>
+												</div>
+												<div
+													class="hidden md:block md:w-[15%] text-left text-sm transition
+													whitespace-nowrap text-ellipsis overflow-hidden text-30"
+												>
+													{note.data.tags?.slice(0, 2).join(" · ")}
+												</div>
+											</div>
+										</a>
+									);
+								})}
+							</div>
+						</section>
+					))
+				}
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function initializeNoteFilters() {
+			const browser = document.querySelector<HTMLElement>("#notes-browser");
+			if (!browser || browser.dataset.initialized === "true") return;
+			browser.dataset.initialized = "true";
+
+			const mocButtons =
+				browser.querySelectorAll<HTMLButtonElement>("[data-moc]");
+			const noteItems =
+				browser.querySelectorAll<HTMLElement>(".note-timeline-item");
+			const yearGroups =
+				browser.querySelectorAll<HTMLElement>(".timeline-year-group");
+			const resultCount =
+				browser.querySelector<HTMLElement>("#notes-result-count");
+			const emptyState =
+				browser.querySelector<HTMLElement>("#notes-empty-state");
+			const summary =
+				browser.querySelector<HTMLElement>("#selected-moc-summary");
+			const summaryName =
+				browser.querySelector<HTMLElement>("#selected-moc-name");
+			const summaryDescription =
+				browser.querySelector<HTMLElement>("#selected-moc-description");
+			const clearButton =
+				browser.querySelector<HTMLButtonElement>("#clear-note-filters");
+
+			if (!resultCount || !emptyState) return;
+
+			const params = new URLSearchParams(window.location.search);
+			let selectedMoc = params.get("moc") ?? "";
+			if (![...mocButtons].some((button) => button.dataset.moc === selectedMoc)) {
+				selectedMoc = "";
+			}
+			const updateUrl = () => {
+				const next = new URLSearchParams();
+				if (selectedMoc) next.set("moc", selectedMoc);
+				const query = next.toString();
+				history.replaceState(
+					null,
+					"",
+					`${window.location.pathname}${query ? `?${query}` : ""}`,
+				);
+			};
+
+			const applyFilters = () => {
+				let visibleTotal = 0;
+				for (const item of noteItems) {
+					const memberships = (item.dataset.mocs ?? "").split("|");
+					const matchesMoc = !selectedMoc || memberships.includes(selectedMoc);
+					item.hidden = !matchesMoc;
+					if (!item.hidden) visibleTotal += 1;
+				}
+
+				for (const group of yearGroups) {
+					const visibleInGroup = group.querySelectorAll(
+						".note-timeline-item:not([hidden])",
+					).length;
+					group.hidden = visibleInGroup === 0;
+					const count = group.querySelector<HTMLElement>("[data-visible-count]");
+					if (count) count.textContent = String(visibleInGroup);
+				}
+
+				for (const button of mocButtons) {
+					button.setAttribute(
+						"aria-pressed",
+						String(button.dataset.moc === selectedMoc),
+					);
+				}
+
+				const selectedButton = [...mocButtons].find(
+					(button) => button.dataset.moc === selectedMoc,
+				);
+				if (summary && summaryName && summaryDescription) {
+					summary.hidden = !selectedMoc;
+					summaryName.textContent = selectedMoc;
+					summaryDescription.textContent =
+						selectedButton?.dataset.description ?? "";
+				}
+
+				resultCount.textContent = String(visibleTotal);
+				emptyState.hidden = visibleTotal !== 0;
+				updateUrl();
+			};
+
+			for (const button of mocButtons) {
+				button.addEventListener("click", () => {
+					selectedMoc = button.dataset.moc ?? "";
+					applyFilters();
+				});
+			}
+			clearButton?.addEventListener("click", () => {
+				selectedMoc = "";
+				applyFilters();
+			});
+
+			applyFilters();
+		}
+
+		document.addEventListener("DOMContentLoaded", initializeNoteFilters);
+		document.addEventListener("astro:page-load", initializeNoteFilters);
+		initializeNoteFilters();
+	</script>
 </MainGridLayout>
+
+<style>
+	.notes-filter-panel {
+		padding: 1rem 0;
+		border-top: 1px dashed var(--line-divider);
+		border-bottom: 1px dashed var(--line-divider);
+	}
+
+	.filter-heading {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.filter-heading {
+		justify-content: space-between;
+		margin-bottom: 0.75rem;
+	}
+
+	.filter-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.875rem;
+		font-weight: 700;
+		color: color-mix(in srgb, currentColor 72%, transparent);
+	}
+
+	.filter-label :global(svg) {
+		font-size: 1.15rem;
+		color: var(--primary);
+	}
+
+	.clear-filter-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.35rem 0.55rem;
+		border-radius: 0.4rem;
+		font-size: 0.75rem;
+		color: color-mix(in srgb, currentColor 55%, transparent);
+		transition: color 160ms ease, background-color 160ms ease;
+	}
+
+	.clear-filter-button:hover {
+		color: var(--primary);
+		background: var(--btn-plain-bg-hover);
+	}
+
+	.moc-filter-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.45rem;
+	}
+
+	.moc-filter-button {
+		min-width: 0;
+		height: 2.55rem;
+		padding: 0 0.7rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		text-align: left;
+		transition: border-color 160ms ease, background-color 160ms ease,
+			color 160ms ease;
+	}
+
+	.moc-filter-button:hover {
+		border-color: color-mix(in srgb, var(--primary) 55%, var(--line-divider));
+		color: var(--primary);
+	}
+
+	.moc-filter-button[aria-pressed="true"] {
+		border-color: var(--primary);
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
+		color: var(--primary);
+	}
+
+	.moc-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 0.8rem;
+		font-weight: 650;
+	}
+
+	.moc-count {
+		flex: 0 0 auto;
+		font-size: 0.7rem;
+		opacity: 0.55;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.selected-moc-summary {
+		margin-top: 0.65rem;
+		padding-left: 0.7rem;
+		border-left: 3px solid var(--primary);
+		font-size: 0.78rem;
+		line-height: 1.55;
+		color: color-mix(in srgb, currentColor 58%, transparent);
+	}
+
+	.selected-moc-summary strong {
+		display: block;
+		color: var(--primary);
+	}
+
+	.timeline-year-heading {
+		display: flex;
+		align-items: center;
+		height: 3.75rem;
+	}
+
+	.timeline-year {
+		width: 15%;
+		text-align: right;
+		font-size: 1.5rem;
+		font-weight: 700;
+		opacity: 0.75;
+	}
+
+	.timeline-marker {
+		width: 15%;
+	}
+
+	.timeline-marker > div {
+		width: 0.75rem;
+		height: 0.75rem;
+		margin: auto;
+		border-radius: 999px;
+		outline: 3px solid var(--primary);
+		outline-offset: -2px;
+	}
+
+	.timeline-year-count {
+		width: 70%;
+		font-size: 0.875rem;
+		opacity: 0.5;
+	}
+
+	.note-moc-label {
+		flex: 0 0 auto;
+		max-width: 7.5rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		padding: 0.12rem 0.35rem;
+		border-radius: 0.3rem;
+		background: color-mix(in srgb, var(--primary) 10%, transparent);
+		color: var(--primary);
+		font-size: 0.65rem;
+		font-weight: 650;
+	}
+
+	.notes-empty-state {
+		padding: 3rem 1rem;
+		text-align: center;
+		color: color-mix(in srgb, currentColor 45%, transparent);
+	}
+
+	.notes-empty-state :global(svg) {
+		margin: 0 auto 0.5rem;
+		font-size: 2.2rem;
+	}
+
+	.notes-empty-state p {
+		font-size: 0.875rem;
+	}
+
+	[hidden] {
+		display: none !important;
+	}
+
+	@media (min-width: 768px) {
+		.moc-filter-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.timeline-year,
+		.timeline-marker {
+			width: 10%;
+		}
+
+		.timeline-year-count {
+			width: 80%;
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.moc-filter-grid {
+			grid-template-columns: repeat(5, minmax(0, 1fr));
+		}
+	}
+</style>
