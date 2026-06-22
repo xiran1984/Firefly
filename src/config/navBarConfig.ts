@@ -58,6 +58,11 @@ import { siteConfig } from "./siteConfig";
 			children: [
 				...(siteConfig.pages.sponsor ? [LinkPreset.Sponsor] : []),
 				LinkPreset.About,
+				{
+					name: "简历",
+					url: "/resume/",
+					icon: "material-symbols:description",
+				},
 			],
 		});
 
