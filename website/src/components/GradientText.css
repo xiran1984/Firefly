@@ -1,0 +1,73 @@
+.animated-gradient-text {
+  position: relative;
+  display: inline-flex;
+  max-width: fit-content;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 1.25rem;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.animated-gradient-text.with-border {
+  padding: 0.35rem 0.75rem;
+}
+
+.animated-gradient-text.with-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background-image: var(--gradient-image);
+  background-size: var(--gradient-size);
+  background-position: var(--gradient-position-start);
+  animation: gradientTextMove var(--gradient-speed) ease-in-out infinite
+    alternate;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.animated-gradient-text .text-content {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  background-image: var(--gradient-image);
+  background-size: var(--gradient-size);
+  background-position: var(--gradient-position-start);
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradientTextMove var(--gradient-speed) linear infinite;
+}
+
+.animated-gradient-text.no-yoyo .text-content,
+.animated-gradient-text.no-yoyo.with-border::before {
+  animation-direction: normal;
+}
+
+.animated-gradient-text.pause-on-hover:hover .text-content,
+.animated-gradient-text.pause-on-hover.with-border:hover::before {
+  animation-play-state: paused;
+}
+
+@keyframes gradientTextMove {
+  from {
+    background-position: var(--gradient-position-start);
+  }
+  to {
+    background-position: var(--gradient-position-end);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-gradient-text .text-content,
+  .animated-gradient-text.with-border::before {
+    animation-duration: calc(var(--gradient-speed) * 2);
+  }
+}

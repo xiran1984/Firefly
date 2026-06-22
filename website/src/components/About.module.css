@@ -1,0 +1,305 @@
+.accent {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.head {
+  margin-bottom: 3.5rem;
+}
+
+/* ==================== 主体：头像 + 介绍 ==================== */
+.body {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) 1.15fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+  margin-bottom: 5rem;
+}
+
+/* ---------- 头像列 ---------- */
+.avatarCol {
+  position: sticky;
+  top: calc(var(--nav-h) + 2rem);
+}
+
+.avatar {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  margin-bottom: 1.75rem;
+}
+
+.avatarInner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.14), transparent 55%),
+    radial-gradient(circle at 80% 90%, rgba(59, 130, 246, 0.12), transparent 55%),
+    linear-gradient(160deg, var(--bg-elev-2), var(--bg));
+}
+
+.avatarGlyph {
+  font-size: clamp(4rem, 9vw, 6.5rem);
+  font-weight: 800;
+  background: linear-gradient(160deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.92;
+}
+
+.avatarRing,
+.avatarRingSecond {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+}
+.avatarRing {
+  width: 70%;
+  height: 70%;
+  top: -10%;
+  right: -20%;
+  animation: floatY 10s var(--ease-in-out) infinite;
+}
+.avatarRingSecond {
+  width: 55%;
+  height: 55%;
+  bottom: -12%;
+  left: -18%;
+  border-color: rgba(0, 212, 255, 0.25);
+  animation: floatY 12s var(--ease-in-out) infinite reverse;
+}
+
+.avatarTag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.3rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+}
+
+/* ---------- 联系方式 ---------- */
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 320px;
+}
+
+.contactList li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-mute);
+}
+
+.contactList a {
+  transition: color 0.2s var(--ease-out);
+}
+.contactList a:hover {
+  color: var(--accent);
+}
+
+.contactIcon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+/* ---------- 介绍列 ---------- */
+.intro {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.85;
+  color: var(--text-mute);
+}
+
+.intro p {
+  margin-bottom: 1.4rem;
+}
+.intro p:first-child {
+  color: var(--text);
+}
+
+/* ==================== 数据条 ==================== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 5rem;
+}
+
+.statItem {
+  background: var(--bg);
+  padding: 2rem 1.5rem;
+  transition: background 0.3s var(--ease-out);
+}
+.statItem:hover {
+  background: var(--bg-elev);
+}
+
+.statValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.1rem;
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
+  font-weight: 800;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  background: linear-gradient(160deg, var(--text), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.statSuffix {
+  font-size: 0.5em;
+  color: var(--accent);
+  -webkit-text-fill-color: var(--accent);
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--text-mute);
+}
+
+/* ==================== 时间线 ==================== */
+.timelineHead {
+  margin-bottom: 2rem;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    var(--accent),
+    var(--line) 30%,
+    transparent
+  );
+}
+
+.tlItem {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+.tlItem:last-child {
+  padding-bottom: 0;
+}
+
+.tlMarker {
+  position: absolute;
+  left: -2rem;
+  top: 4px;
+}
+
+.tlDot {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+}
+
+.tlContent {
+  padding-left: 0.5rem;
+}
+
+.tlTop {
+  margin-bottom: 0.35rem;
+}
+
+.tlPeriod {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+.tlRole {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+.tlCompany {
+  font-weight: 400;
+  color: var(--text-mute);
+}
+
+.tlHighlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tlHighlights li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: var(--text-mute);
+}
+.tlHighlights li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+  .avatarCol {
+    position: static;
+    max-width: 320px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
