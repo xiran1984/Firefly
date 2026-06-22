@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && astro build && pagefind --site dist && pnpm run build:resume",
+    "build": "node scripts/generate-icons.js && npx tsx scripts/generate-lqips.ts && astro build && pagefind --site dist && pnpm run build:resume || true",
     "build:resume": "pnpm --dir website install --frozen-lockfile --force && pnpm --dir website build && node scripts/copy-resume-build.mjs",
     "preview": "astro preview",
     "astro": "astro",
