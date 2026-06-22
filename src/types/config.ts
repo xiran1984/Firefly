@@ -193,6 +193,7 @@ export type NavBarLink = {
 	url: string;
 	external?: boolean;
 	icon?: string; // 菜单项图标
+	noSwup?: boolean; // 跳过 Swup 页面转场，直接整页跳转
 	children?: (NavBarLink | LinkPreset)[]; // 支持子菜单，可以是NavBarLink或LinkPreset
 };
 

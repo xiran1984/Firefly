@@ -60,8 +60,9 @@ import { siteConfig } from "./siteConfig";
 				LinkPreset.About,
 				{
 					name: "简历",
-					url: "/resume/",
+					url: "https://xiran.cc/resume/",
 					icon: "material-symbols:description",
+					noSwup: true,
 				},
 			],
 		});
