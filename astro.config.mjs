@@ -24,7 +24,6 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, plantumlConfig, siteConfig } from "./src/config";
-import noteMap from "./src/data/note-link-map.json";
 import I18nKey from "./src/i18n/i18nKey";
 import { i18n } from "./src/i18n/translation";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
@@ -39,7 +38,6 @@ import { remarkImageGrid } from "./src/plugins/remark-image-grid.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkPlantuml } from "./src/plugins/remark-plantuml.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
-import { remarkWikiLinks } from "./src/plugins/remark-wikilinks.mjs";
 
 if (process.env.NODE_ENV === "development") {
 	setMaxListeners(20);
@@ -209,7 +207,6 @@ export default defineConfig({
 			remarkPlugins: [
 				remarkMath,
 				remarkReadingTime,
-				[remarkWikiLinks, { noteMap, stripRelationSection: true }],
 				remarkImageGrid,
 				remarkExcerpt,
 				remarkDirective,

@@ -22,13 +22,6 @@ import { siteConfig } from "./siteConfig";
 			icon: "material-symbols:article-rounded",
 		});
 
-		// 笔记
-		links.push({
-			name: "笔记",
-			url: "/notes/",
-			icon: "material-symbols:neurology",
-		});
-
 		// 技能
 		links.push({
 			name: "技能",
