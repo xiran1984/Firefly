@@ -18,6 +18,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.immich-gallery
+.env.immich-gallery.log
 
 # macOS-specific files
 .DS_Store

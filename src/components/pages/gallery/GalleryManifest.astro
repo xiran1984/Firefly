@@ -1,0 +1,116 @@
+---
+interface Props {
+	url?: string;
+}
+
+const { url } = Astro.props;
+---
+
+{url ? <firefly-gallery-manifest class="contents" data-url={url}><slot /></firefly-gallery-manifest> : <slot />}
+
+<script>
+  type Photo = { thumbnail: string; preview: string; width: number; height: number };
+  type Manifest = { version: number; coverId: string | null; photos: (Photo & { id: string })[] };
+
+  function isImageUrl(value: string, manifestUrl: URL): boolean {
+    const imageUrl = new URL(value, manifestUrl);
+    return imageUrl.origin === manifestUrl.origin && !imageUrl.username && !imageUrl.password;
+  }
+
+  function readManifest(value: Manifest, manifestUrl: URL): Manifest {
+    if (value?.version !== 1 || !Array.isArray(value.photos) || !value.photos.every((photo) =>
+      photo && typeof photo.id === "string" && typeof photo.thumbnail === "string" &&
+      typeof photo.preview === "string" && isImageUrl(photo.thumbnail, manifestUrl) &&
+      isImageUrl(photo.preview, manifestUrl) && Number.isInteger(photo.width) && photo.width > 0 &&
+      Number.isInteger(photo.height) && photo.height > 0
+    )) {
+      throw new Error("Invalid gallery manifest");
+    }
+    return value;
+  }
+
+  class FireflyGalleryManifest extends HTMLElement {
+    private request?: AbortController;
+
+    connectedCallback() {
+      this.request = new AbortController();
+      void this.load(this.request.signal);
+    }
+
+    disconnectedCallback() {
+      this.request?.abort();
+    }
+
+    private async load(signal: AbortSignal) {
+      const status = this.querySelector<HTMLElement>("[data-gallery-status]");
+      try {
+        const manifestUrl = new URL(this.dataset.url || "", window.location.href);
+        if (manifestUrl.protocol !== "https:" && manifestUrl.origin !== window.location.origin) {
+          throw new Error("Gallery manifest requires HTTPS");
+        }
+        const response = await fetch(manifestUrl, {
+          credentials: "omit",
+          signal: AbortSignal.any([signal, AbortSignal.timeout(10000)]),
+        });
+        if (!response.ok) throw new Error(`Gallery manifest HTTP ${response.status}`);
+        const manifest = readManifest(await response.json(), manifestUrl);
+        if (signal.aborted) return;
+
+        for (const count of this.querySelectorAll("[data-gallery-count]")) {
+          count.textContent = String(manifest.photos.length);
+        }
+        const cover = this.querySelector<HTMLImageElement>("[data-gallery-cover]");
+        const coverPhoto = manifest.photos.find(({ id }) => id === manifest.coverId) ?? manifest.photos[0];
+        if (cover && coverPhoto) {
+          cover.addEventListener("load", () => {
+            cover.hidden = false;
+            this.querySelector<HTMLElement>("[data-gallery-cover-placeholder]")?.setAttribute("aria-hidden", "true");
+          }, { once: true });
+          cover.src = new URL(coverPhoto.thumbnail, manifestUrl).href;
+        }
+
+        const grid = this.querySelector("[data-gallery-photos]");
+        const template = this.querySelector<HTMLTemplateElement>("[data-gallery-photo-template]");
+        if (!grid || !template || !status) return;
+
+        const fragment = document.createDocumentFragment();
+        for (const photo of manifest.photos) {
+          const card = template.content.cloneNode(true) as DocumentFragment;
+          const image = card.querySelector("img")!;
+          const trigger = card.querySelector<HTMLElement>("[data-fancybox]")!;
+          const cardPlaceholder = card.querySelector(".lqip-placeholder");
+          image.width = photo.width;
+          image.height = photo.height;
+          image.addEventListener("load", () => {
+            image.classList.remove("opacity-0");
+            cardPlaceholder?.classList.add("loaded");
+          }, { once: true });
+          image.src = new URL(photo.thumbnail, manifestUrl).href;
+          trigger.dataset.src = new URL(photo.preview, manifestUrl).href;
+          trigger.tabIndex = 0;
+          trigger.setAttribute("role", "button");
+          trigger.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              trigger.click();
+            }
+          });
+          fragment.append(card);
+        }
+        grid.replaceChildren(fragment);
+        status.hidden = manifest.photos.length > 0;
+        status.textContent = status.dataset.empty || "";
+        if (manifest.photos.length) document.dispatchEvent(new Event("gallery:photos-loaded"));
+      } catch {
+        if (!signal.aborted && status) {
+          status.hidden = false;
+          status.textContent = status.dataset.error || "";
+        }
+      }
+    }
+  }
+
+  if (!customElements.get("firefly-gallery-manifest")) {
+    customElements.define("firefly-gallery-manifest", FireflyGalleryManifest);
+  }
+</script>

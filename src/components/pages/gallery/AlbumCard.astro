@@ -14,6 +14,7 @@ interface Props {
 	tags?: string[];
 	photoCount: number;
 	encrypted?: boolean;
+	synced?: boolean;
 }
 
 const {
@@ -26,6 +27,7 @@ const {
 	tags,
 	photoCount,
 	encrypted,
+	synced,
 } = Astro.props;
 
 // LQIP 渐变占位
@@ -51,14 +53,17 @@ const lqipProps = cover ? getLqipProps(cover, undefined, true) : { style: "" };
         />
       </>
     ) : (
-      <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+      <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center" data-gallery-cover-placeholder={synced ? "" : undefined}>
         <div class="text-gray-400 text-5xl">&#x1f4f7;</div>
       </div>
+    )}
+    {synced && (
+      <img data-gallery-cover hidden alt={name} class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform group-hover:scale-105" decoding="async" />
     )}
 
     <!-- Photo count badge -->
     <div class="absolute top-2 right-2 px-2 py-1 rounded-full text-xs text-white font-medium bg-black/50 backdrop-blur-sm">
-      {photoCount} {i18n(I18nKey.galleryPhotos)}
+      <span data-gallery-count={synced ? "" : undefined}>{synced ? "—" : photoCount}</span> {i18n(I18nKey.galleryPhotos)}
     </div>
 
     {/* Encrypted badge */}

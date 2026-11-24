@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import EncryptedContent from "@/components/features/EncryptedContent.astro";
+import GalleryManifest from "@/components/pages/gallery/GalleryManifest.astro";
 import PhotoCard from "@/components/pages/gallery/PhotoCard.astro";
 import { galleryConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
@@ -39,6 +40,7 @@ const coverLqipProps = cover
 ---
 
 <MainGridLayout title={albumMeta.name} description={albumMeta.description || ""}>
+  <GalleryManifest url={albumMeta.manifestUrl}>
   <!-- 相册封面横幅 -->
   <div class="w-full rounded-(--radius-large) overflow-hidden relative">
     {cover ? (
@@ -122,7 +124,7 @@ const coverLqipProps = cover
               {albumMeta.location}
             </span>
           )}
-          <span>{photos.length} {i18n(I18nKey.galleryPhotos)}</span>
+          <span><span data-gallery-count={albumMeta.manifestUrl ? "" : undefined}>{albumMeta.manifestUrl ? "—" : photos.length}</span> {i18n(I18nKey.galleryPhotos)}</span>
         </div>
       </div>
     )}
@@ -131,7 +133,16 @@ const coverLqipProps = cover
   <!-- 瀑布流照片网格 -->
   <div class="w-full rounded-(--radius-large) overflow-hidden relative mt-4">
     <div class="card-base z-10 px-6 py-6 relative w-full">
-      {photos.length > 0 ? (
+      {albumMeta.manifestUrl ? (
+        <>
+          <p class="py-12 text-center text-neutral-500 dark:text-neutral-400" role="status" data-gallery-status
+            data-empty="暂无照片。" data-error="暂时无法加载相册，请刷新重试。">正在加载照片…</p>
+          <div data-gallery-photos class="gallery-masonry" style={`column-count: 2; column-gap: 0.75rem; --col-width: ${columnWidth}px;`}></div>
+          <template data-gallery-photo-template>
+            <PhotoCard src="" albumId={albumMeta.id} alt={albumMeta.name} />
+          </template>
+        </>
+      ) : photos.length > 0 ? (
         albumMeta.password ? (
           <EncryptedContent password={albumMeta.password} slug={albumMeta.id} hint={albumMeta.passwordHint}>
             <div
@@ -161,6 +172,7 @@ const coverLqipProps = cover
       )}
     </div>
   </div>
+  </GalleryManifest>
 
   <style is:global>
     @media (min-width: 640px) {

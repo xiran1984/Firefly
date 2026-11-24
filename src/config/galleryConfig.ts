@@ -1,5 +1,7 @@
 import type { GalleryConfig } from "@/types/config";
 
+const shengtuManifestUrl = import.meta.env?.PUBLIC_IMMICH_GALLERY_MANIFEST_URL;
+
 // 相册配置
 export const galleryConfig: GalleryConfig = {
 	// 相册列表
@@ -34,6 +36,9 @@ export const galleryConfig: GalleryConfig = {
 			password: "123456",
 			passwordHint: "示例密码123456",
 		},
+		...(shengtuManifestUrl
+			? [{ id: "shengtu", name: "生图", manifestUrl: shengtuManifestUrl }]
+			: []),
 	],
 
 	// 瀑布流最小列宽(px)，浏览器根据容器宽度自动计算列数，默认 240

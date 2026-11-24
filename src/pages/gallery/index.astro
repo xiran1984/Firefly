@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import AlbumCard from "@/components/pages/gallery/AlbumCard.astro";
+import GalleryManifest from "@/components/pages/gallery/GalleryManifest.astro";
 import { galleryConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
@@ -91,17 +92,20 @@ const allTags = [...new Set(albums.flatMap((a) => a.tags || []))].sort();
         <>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
             {albums.map((album) => (
-              <AlbumCard
-                id={album.id}
-                name={album.name}
-                cover={album.cover}
-                description={album.description}
-                date={album.date}
-                location={album.location}
-                tags={album.tags}
-                photoCount={album.photoCount}
-                encrypted={!!album.password}
-              />
+              <GalleryManifest url={album.manifestUrl}>
+                <AlbumCard
+                  id={album.id}
+                  name={album.name}
+                  cover={album.cover}
+                  description={album.description}
+                  date={album.date}
+                  location={album.location}
+                  tags={album.tags}
+                  photoCount={album.photoCount}
+                  encrypted={!!album.password}
+                  synced={!!album.manifestUrl}
+                />
+              </GalleryManifest>
             ))}
           </div>
           {/* 搜索无结果提示 */}
