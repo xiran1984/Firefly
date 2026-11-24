@@ -54,13 +54,17 @@ async function fixture(t) {
 	const uploads = [];
 	const blob = {
 		failAfterPhotos: false,
+		staleManifest: false,
 		list: async () => ({ blobs: [...storage.values()] }),
 		get: async () => {
 			const entry = storage.get(manifestPath);
 			return {
 				statusCode: 200,
 				stream: new Response(entry.data).body,
-				blob: entry,
+				blob: {
+					...entry,
+					etag: blob.staleManifest ? 'W/"stale"' : `W/${entry.etag}`,
+				},
 			};
 		},
 		put: async (pathname, data, options) => {
@@ -73,7 +77,7 @@ async function fixture(t) {
 				pathname,
 				data,
 				url: `https://fixture.public.blob.vercel-storage.com/${pathname}`,
-				etag: `${uploads.length}`,
+				etag: `"${uploads.length}"`,
 			};
 			storage.set(pathname, entry);
 			uploads.push(pathname);
@@ -127,6 +131,10 @@ test("failed upload and incomplete album listing keep the prior published manife
 	await syncGallery(config, { blob });
 	const published = readIndex();
 	rows.assets = [first, second];
+	blob.staleManifest = true;
+	await assert.rejects(syncGallery(config, { blob }), /cache is stale/);
+	assert.deepEqual(readIndex(), published);
+	blob.staleManifest = false;
 	blob.failAfterPhotos = true;
 	await assert.rejects(syncGallery(config, { blob }), /Upload failed/);
 	assert.deepEqual(readIndex(), published);

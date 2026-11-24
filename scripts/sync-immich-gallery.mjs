@@ -141,7 +141,7 @@ async function readPublishedManifest(config, blob) {
 	if (
 		response?.statusCode !== 200 ||
 		!entry.etag ||
-		response.blob.etag !== entry.etag
+		response.blob.etag.replace(/^W\//, "") !== entry.etag
 	) {
 		throw new Error(
 			"Published manifest changed or its cache is stale. Try the next sync.",
